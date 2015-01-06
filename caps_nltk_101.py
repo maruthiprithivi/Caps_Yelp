@@ -22,7 +22,7 @@ d1 = csv.reader(dataOpen,delimiter=',',quotechar='"')
 x = 0
 y = 0
 cnt = 0
-
+test = list()
 ## Test code for stopwords
 """
 words = ["Can't", 'is', 'a', 'contraction']
@@ -39,16 +39,21 @@ for i in d1:
     wordLem = [wd_lm.lemmatize(wordLe) for wordLe in wordLow] ##Run Through Lemmatization
     wordStem = [pr_sm.stem(wordLe) for wordLe in wordLow] ##Run Through Stemming
     wordRemoved = [wordT for wordT in wordLem if wordT not in en_sw] ##Removing StopWords
-    # wordRemoved = [wordT for wordT in i[14] if wordT not in en_sw]
     wordPos = nltk.pos_tag(wordRemoved) ##POS Tagging
-    if y > 1:
-        print wordLow
-        print wordStem
-        print wordLem
-        print wordRemoved
-        # print wordPos
+    for word in wordPos:
+        wordLemPos = [wd_lm.lemmatize(wordLe) for wordLe in word] ##Run Through Lemmatization
+        test = wordLemPos.append()
+    print test[0]
+    # if y > 1:
+    #     print wordLow
+    #     print wordStem
+    #     print wordLem
+    #     print wordRemoved
+    #     print len(wordRemoved)
+    #     print wordPos
+    #     print len(wordPos)
         # print type(wordPos)
-
+        # print wordLemPos
 
 
 print "Going Good"
