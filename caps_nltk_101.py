@@ -80,7 +80,7 @@ pr_sm = PorterStemmer()
 dataOpen = open("dataset/Data_101.csv", 'r')
 d1 = csv.reader(dataOpen,delimiter=',',quotechar='"')
 op1 = csv.writer(open("dataset/review_aspects.csv", "wb"), delimiter=',', quotechar="", quoting=csv.QUOTE_NONE, escapechar = ",")
-header = ["Business_Id","Reviewer_Id", "Review", "Food", "Ambience", "Service", "Price"]
+header = ["Business_Id","Reviewer_Id", "Stars", "Review", "Food", "Ambience", "Service", "Price"]
 op1.writerow(header)
 # print dataOpen
 # data1 = dataOpen.read()
@@ -90,6 +90,8 @@ y = 0
 cnt = 0
 ct = dict()
 test = list()
+aspAmbi = list()
+aspFood = list()
 ## Test code for stopwords
 """
 words = ["Can't", 'is', 'a', 'contraction']
@@ -100,6 +102,12 @@ print wrdRM
 # for q in d1:
 #     ct = q.count(q[12])
 #     print q[12],"-",ct
+"""
+Custom definition to iterate through the broken reviews
+"""
+def words_in_string(word_list, a_string):
+    return set(word_list).intersection(a_string.split())
+
 fooD = ["food","delicious","yummy", "tasty", "fresh", "salad"]
 ambI = ["atmosphere"]
 for i in d1:
@@ -116,17 +124,20 @@ for i in d1:
     txt = txt.replace("-",".")
     # txt = txt.replace(" ","")
     txtSplit = txt.split(".")
-
+    # wordT for wordT in wordLemma if wordT not in en_sw
     txtL = [wordL.lower() for wordL in txtSplit]
-    for x in txtL:
-        if x in fooD:
-            aspFood = x
+    for e in txtL:
+        # print e
+        if words_in_string(fooD,e):
+            aspFood = e
+            print "#### Food:",aspFood
             continue
-        if x in ambI:
-            aspAmbi = x
+        if words_in_string(ambI,e):
+            aspAmbi = e
+            print "#### Ambience:",aspAmbi
             continue
-        data = [i]
-        op1.writerow(data)
+        # data = [i[0], i[12], i[13], i[14], aspFood, aspAmbi]
+        # op1.writerow(data)
 
 
 
@@ -175,5 +186,5 @@ for i in d1:
         # print type(wordPos)
         # print wordLemPos
 
-
+# print data
 print "Going Good"
