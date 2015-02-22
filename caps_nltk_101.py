@@ -82,6 +82,9 @@ d1 = csv.reader(dataOpen,delimiter=',',quotechar='"')
 op1 = csv.writer(open("dataset/review_aspects.csv", "wb"), delimiter=',', quotechar="", quoting=csv.QUOTE_NONE, escapechar = ",")
 header = ["Business_Id","Reviewer_Id", "Stars", "Review", "Food", "Ambience", "Service", "Price"]
 op1.writerow(header)
+## Wrte to txt file
+dR1 = open("dataset/review_aspects01.txt","w")
+
 # print dataOpen
 # data1 = dataOpen.read()
 # print type(d1)
@@ -92,6 +95,7 @@ ct = dict()
 test = list()
 aspAmbi = list()
 aspFood = list()
+# aspFood = str()
 ## Test code for stopwords
 """
 words = ["Can't", 'is', 'a', 'contraction']
@@ -129,16 +133,30 @@ for i in d1:
     for e in txtL:
         # print e
         if words_in_string(fooD,e):
-            aspFood = e
+            # aspFood =+ e
+            aspFood.append(e)
             print "#### Food:",aspFood
-            continue
         if words_in_string(ambI,e):
-            aspAmbi = e
+            aspAmbi.append(e)
             print "#### Ambience:",aspAmbi
-            continue
-        # data = [i[0], i[12], i[13], i[14], aspFood, aspAmbi]
-        # op1.writerow(data)
-
+    aspFd = aspFood.__str__()
+    aspFd = aspFd.replace("[","")
+    aspFd = aspFd.replace("]","")
+    aspFd = aspFd.replace("'","")
+    aspFd = aspFd.replace('"',"'")
+    aspFd = aspFd.replace(",","")
+    aspAm = aspAmbi.__str__()
+    aspAm = aspAm.replace("[","")
+    aspAm = aspAm.replace("]","")
+    aspAm = aspAm.replace("'","")
+    aspAm = aspAm.replace('"',"'")
+    aspAm = aspAm.replace(",","")
+    data = i[0], i[12], i[13], i[14], aspFd, aspAm
+    # data1 = i[0]+"\t",i[12]+"\t",i[13]+"\t",i[14]+"\t", aspFood+"\t",aspAmbi
+    op1.writerow(data)
+    print data
+    del aspFood[:]
+    del aspAmbi[:]
 
 
 
