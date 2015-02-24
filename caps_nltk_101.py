@@ -1,6 +1,7 @@
 __author__ = 'maruthi'
 
 import re
+import string
 import csv
 import nltk
 from nltk.tokenize import word_tokenize
@@ -12,65 +13,66 @@ from nltk.stem.porter import PorterStemmer #Stemmer
 from nltk.util import ngrams # N-Grams
 """
 # Contraction Expansion List and Function
-cont_dict =  {
-    "aren't":" are not",
-    "can't":" cannot",
-    "couldn't":" could not",
-    "didn't":" did not",
-    "doesn't":" does not",
-    "don't":" do not",
-    "hadn't":" had not",
-    "hasn't":" has not",
-    "haven't":" have not",
-    "he'd":" he had; he would",
-    "he'll":" he will; he shall",
-    "he's":" he is; he has",
-    "I'd":" I had; I would",
-    "I'll":" I will; I shall",
-    "I'm":" I am",
-    "I've":" I have",
-    "isn't":" is not",
-    "let's":" let us",
+contractions_dict =  {
+    "aren't":"are not",
+    "can't":"cannot",
+    "couldn't":"could not",
+    "didn't":"did not",
+    "doesn't":"does not",
+    "don't":"do not",
+    "hadn't":"had not",
+    "hasn't":"has not",
+    "haven't":"have not",
+    "he'd":"he had",
+    "he'll":"he will",
+    "he's":"he is",
+    "I'd":"I had",
+    "I'll":"I will",
+    "I'm":"I am",
+    "I've":"I have",
+    "isn't":"is not",
+    "let's":"let us",
     "mightn't":"might not",
-    "mustn't":" must not",
+    "mustn't":"must not",
+    "must've":"must have",
     "shan't":" shall not",
-    "she'd":" she had; she would",
-    "she'll":" she will; she shall",
-    "she's":" she is; she has",
+    "she'd":"she would",
+    "she'll":"she shall",
+    "she's":"she is",
     "shouldn't":" should not",
-    "that's":" that is; that has",
-    "there's":" there is; there has",
-    "they'd":" they had; they would",
-    "they'll":" they will; they shall",
-    "they're":" they are",
-    "they've":" they have",
-    "we'd":" we had; we would",
-    "we're":" we are",
-    "we've":" we have",
-    "weren't":" were not",
-    "what'll":" what will; what shall",
-    "what're":" what are",
-    "what's":" what is; what has",
-    "what've":" what have",
-    "where's":" where is; where has",
-    "who's":" who had; who would",
-    "who'll":" who will; who shall",
-    "who're":" who are",
-    "who's":" who is; who has",
-    "who've":" who have",
-    "won't":" will not",
+    "that's":"that is",
+    "there's":"there is",
+    "they'd":"they had",
+    "they'll":"they will",
+    "they're":"they are",
+    "they've":"they have",
+    "we'd":"we had",
+    "we're":"we are",
+    "we've":"we have",
+    "weren't":"were not",
+    "what'll":"what will",
+    "what're":"what are",
+    "what's":"what is",
+    "what've":"what have",
+    "where's":"where is",
+    "who's":"who had",
+    "who'll":"who will",
+    "who're":"who are",
+    "who's":"who is",
+    "who've":"who have",
+    "won't":"will not",
     "wouldn't":" would not",
-    "you'd":" you had; you would",
-    "you'll":" you will; you shall",
-    "you're":" you are",
-    "you've":" you have "
+    "you'd":"you had",
+    "you'll":"you will",
+    "you're":"you are",
+    "you've":"you have "
   }
 
-cont_re = re.compile('(%s)' % '|'.join(cont_dict.keys()))
-def exp_cont(s, cont_dict=cont_dict):
-    def replace(match):
-        return cont_dict[match.group(0)]
-    return cont_re.sub(replace, s)
+ contractions_re = re.compile('(%s)' % '|'.join(contractions_dict.keys()))
+ def expand_contractions(s, contractions_dict=contractions_dict):
+     def replace(match):
+         return contractions_dict[match.group(0)]
+     return contractions_re.sub(replace, s)
 """
 
 regToken = RegexpTokenizer("[\w']+")
@@ -83,7 +85,7 @@ op1 = csv.writer(open("dataset/review_aspects.csv", "wb"), delimiter=',', quotec
 header = ["Business_Id","Reviewer_Id", "Stars", "Review", "Food", "Ambience", "Service", "Price"]
 op1.writerow(header)
 ## Wrte to txt file
-dR1 = open("dataset/review_aspects01.txt","w")
+# dR1 = open("dataset/review_aspects01.txt","w")
 
 # print dataOpen
 # data1 = dataOpen.read()
@@ -95,6 +97,8 @@ ct = dict()
 test = list()
 aspAmbi = list()
 aspFood = list()
+aspServ = list()
+aspPric = list()
 # aspFood = str()
 ## Test code for stopwords
 """
@@ -114,6 +118,8 @@ def words_in_string(word_list, a_string):
 
 fooD = ["food","delicious","yummy", "tasty", "fresh", "salad"]
 ambI = ["atmosphere"]
+serV = ["staff","looking"]
+priC = ["price","cheap","expensive"]
 for i in d1:
     y = y + 1
     if y >= 5: break
@@ -139,12 +145,30 @@ for i in d1:
         if words_in_string(ambI,e):
             aspAmbi.append(e)
             print "#### Ambience:",aspAmbi
+        if words_in_string(serV,e):
+            aspServ.append(e)
+            print "#### Ambience:",aspAmbi
+        if words_in_string(priC,e):
+            aspPric.append(e)
+            print "#### Ambience:",aspAmbi
     aspFd = aspFood.__str__()
     aspFd = aspFd.replace("[","")
     aspFd = aspFd.replace("]","")
     aspFd = aspFd.replace("'","")
     aspFd = aspFd.replace('"',"'")
     aspFd = aspFd.replace(",","")
+    aspAm = aspAmbi.__str__()
+    aspAm = aspAm.replace("[","")
+    aspAm = aspAm.replace("]","")
+    aspAm = aspAm.replace("'","")
+    aspAm = aspAm.replace('"',"'")
+    aspAm = aspAm.replace(",","")
+    aspAm = aspAmbi.__str__()
+    aspAm = aspAm.replace("[","")
+    aspAm = aspAm.replace("]","")
+    aspAm = aspAm.replace("'","")
+    aspAm = aspAm.replace('"',"'")
+    aspAm = aspAm.replace(",","")
     aspAm = aspAmbi.__str__()
     aspAm = aspAm.replace("[","")
     aspAm = aspAm.replace("]","")

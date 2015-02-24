@@ -7,6 +7,59 @@ from nltk.tokenize import word_tokenize
 from nltk.tokenize import RegexpTokenizer #Regular Expression Based Tokenizer
 from nltk.corpus import stopwords #Stopwords List
 
+cont = ["aren't",
+"can't",
+"couldn't",
+"didn't",
+"doesn't",
+"don't",
+"hadn't",
+"hasn't",
+"haven't",
+"he'd",
+"he'll",
+"he's",
+"I'd",
+"I'll",
+"I'm",
+"I've",
+"isn't",
+"let's",
+"mightn't",
+"mustn't",
+"shan't",
+"she'd",
+"she'll",
+"she's",
+"shouldn't",
+"that's",
+"there's",
+"they'd",
+"they'll",
+"they're",
+"they've",
+"we'd",
+"we're",
+"we've",
+"weren't",
+"what'll",
+"what're",
+"what's",
+"what've",
+"where's",
+"who's",
+"who'll",
+"who're",
+"who's",
+"who've",
+"won't",
+"wouldn't",
+"you'd",
+"you'll",
+"you're",
+"you've",
+"it's",
+"must've"]
 
 regToken = RegexpTokenizer("[\w']+")
 en_sw = set(stopwords.words('english'))
@@ -34,18 +87,40 @@ wordcount2 = {}
 wordcount3 = {}
 wordcount4 = {}
 
+
+# s = "string. With. Punctuation?"
+# s = re.sub(r'[^\w\s]','',s)
+
 for i in d1:
+
+    # print i[4]
+
+    # iR1 = re.sub(r'[^\w\s]','',i[1])
+    # iR1 = re.sub(r'[0-9]','',iR1)
     wdTk1 = regToken.tokenize(i[1])
     txtL1 = [wordL.lower() for wordL in wdTk1]
+    txtL1 = [wordT for wordT in txtL1 if wordT not in cont]
     wdRm1 = [wordT for wordT in txtL1 if wordT not in en_sw]
+
+    # iR2 = re.sub(r'[^\w\s]','',i[2])
+    # iR2 = re.sub(r'[0-9]','',iR2)
     wdTk2 = regToken.tokenize(i[2])
     txtL2 = [wordL.lower() for wordL in wdTk2]
+    txtL2 = [wordT for wordT in txtL2 if wordT not in cont]
     wdRm2 = [wordT for wordT in txtL2 if wordT not in en_sw]
+
+    # iR3 = re.sub(r'[^\w\s]','',i[3])
+    # iR3 = re.sub(r'[0-9]','',iR3)
     wdTk3 = regToken.tokenize(i[3])
     txtL3 = [wordL.lower() for wordL in wdTk3]
+    txtL3 = [wordT for wordT in txtL3 if wordT not in cont]
     wdRm3 = [wordT for wordT in txtL3 if wordT not in en_sw]
+
+    # iR4 = re.sub(r'[^\w\s]','',i[4])
+    # iR4 = re.sub("[^A-Za-z]",'',i[4])
     wdTk4 = regToken.tokenize(i[4])
     txtL4 = [wordL.lower() for wordL in wdTk4]
+    txtL4 = [wordT for wordT in txtL4 if wordT not in cont]
     wdRm4 = [wordT for wordT in txtL4 if wordT not in en_sw]
 
     for e in wdRm1:
