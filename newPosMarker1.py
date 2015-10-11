@@ -12,7 +12,7 @@ from nltk.tokenize import sent_tokenize
 from vaderSentiment.vaderSentiment import sentiment as vaderSentiment
 import xlsxwriter as xlS
 i = 0
-reviewCount = 0
+reviewCount = 100000
 row0 = 0
 col0 = 0
 x = 0
@@ -32,7 +32,7 @@ adjectivecount = {}
 adjectiveprep = list()
 en_sw = set(stopwords.words('english'))
 
-workbook = xlS.Workbook("markOneTestOne.xlsx")
+workbook = xlS.Workbook("markOne50k.xlsx")
 worksheet0 = workbook.add_worksheet('marked')
 worksheet0.write(row0, col0, "User_Id")
 worksheet0.write(row0, col0 + 1, "Business_Id")
@@ -46,6 +46,7 @@ worksheet0.write(row0, col0 + 8, "Price_Aspect")
 worksheet0.write(row0, col0 + 9, "Unknown_Aspect")
 worksheet0.write(row0, col0 + 10, "Sentiment")
 worksheet0.write(row0, col0 + 11, "Count_Of_Non_Stop_Words")
+worksheet0.write(row0, col0 + 12, "Review_Id")
 
 
 
@@ -56,25 +57,21 @@ dataOpen = codecs.open("mktest2.csv", 'r')
 d1 = csv.reader(dataOpen,delimiter=',',quotechar='"')
 fooD = open("food1.txt", 'r')
 foodFile = fooD.read().split(',')
-# print type(foodFile)
 ambiencE = open("ambience1.txt", 'r')
 ambienceFile = ambiencE.read().split(',')
-# print type(ambienceFile)
 servicE = open("service1.txt", 'r')
 serviceFile = servicE.read().split(',')
-# print type(serviceFile)
 pricE = open("price1.txt", 'r')
 priceFile = pricE.read().split(',')
-# print type(priceFile)
 emotioN = open("emotion1.txt", 'r')
 emotionFile = emotioN.read().split(',')
-# print type(emotionFile)
 
 startTime0 = time.time()
 for revieW in d1:
         # startTime1 = time.time()
-        reviewCount += 1
+
         if x > 0:
+            reviewCount += 1
             sentenceLoc = 0
             seQ = 1
             revieW[14] = unicode(revieW[14], errors='ignore')
@@ -301,6 +298,7 @@ for revieW in d1:
                     worksheet0.write(row0 + 1, col0 + 10, sent_sentiment)
                     worksheet0.write(row0 + 1, col0 + 11, len(nonStopWordBag))
                     worksheet0.write(row0 + 1, col0 + 3, seQ)
+                    worksheet0.write(row0 + 1, col0 + 12, reviewCount)
                     adjectiveprep[:] = []
                     adjectivecount.clear()
                     nounprep[:] = []
