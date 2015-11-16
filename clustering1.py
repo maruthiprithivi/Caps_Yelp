@@ -217,29 +217,49 @@ numClusters = 5
 
 km = KMeans(n_clusters=numClusters)
 
-km.fit(tfidfMatrix1)
-km.fit(tfidfMatrix1)
-km.fit(tfidfMatrix1)
-km.fit(tfidfMatrix1)
-km.fit(tfidfMatrix1)
+km1 = km.fit(tfidfMatrix1)
+km2 = km.fit(tfidfMatrix2)
+km3 = km.fit(tfidfMatrix3)
+km4 = km.fit(tfidfMatrix4)
+km5 = km.fit(tfidfMatrix5)
 
-clusters = km.labels_.tolist()
+clustersOne = km1.labels_.tolist()
+clustersTwo = km2.labels_.tolist()
+clustersThree = km3.labels_.tolist()
+clustersFour = km4.labels_.tolist()
+clustersFive = km5.labels_.tolist()
 
 #joblib.dump(km,  'doc_cluster.pkl')
-km = joblib.load('doc_cluster.pkl')
-clusters = km.labels_.tolist()
+km1 = joblib.load('doc_cluster.pkl')
+km2 = joblib.load('doc_cluster.pkl')
+km3 = joblib.load('doc_cluster.pkl')
+km4 = joblib.load('doc_cluster.pkl')
+km5 = joblib.load('doc_cluster.pkl')
 
-oneStarReviews = { 'businessId': businessId1, 'reviews': bagOfReviews1, 'cluster': clusters, 'location': state1}
-twoStarReviews = { 'businessId': businessId2, 'reviews': bagOfReviews1, 'cluster': clusters, 'location': state2}
-threeStarReviews = { 'businessId': businessId3, 'reviews': bagOfReviews1, 'cluster': clusters, 'location': state3}
-fourStarReviews = { 'businessId': businessId4, 'reviews': bagOfReviews1, 'cluster': clusters, 'location': state4}
-fiveStarReviews = { 'businessId': businessId5, 'reviews': bagOfReviews1, 'cluster': clusters, 'location': state5}
+clustersOne = km1.labels_.tolist()
+clustersTwo = km2.labels_.tolist()
+clustersThree = km3.labels_.tolist()
+clustersFour = km4.labels_.tolist()
+clustersFive = km5.labels_.tolist()
 
-reviewFrame1 = pd.DataFrame(oneStarReviews, index = [clusters] , columns = ['businessId', 'cluster', 'state'])
-reviewFrame2 = pd.DataFrame(oneStarReviews, index = [clusters] , columns = ['businessId', 'cluster', 'state'])
-reviewFrame3 = pd.DataFrame(oneStarReviews, index = [clusters] , columns = ['businessId', 'cluster', 'state'])
-reviewFrame4 = pd.DataFrame(oneStarReviews, index = [clusters] , columns = ['businessId', 'cluster', 'state'])
-reviewFrame5 = pd.DataFrame(oneStarReviews, index = [clusters] , columns = ['businessId', 'cluster', 'state'])
+print clustersOne
+print clustersTwo
+print clustersThree
+print clustersFour
+print clustersFive
+
+
+oneStarReviews = { 'businessId': businessId1, 'reviews': bagOfReviews1, 'cluster': clustersOne, 'location': state1}
+twoStarReviews = { 'businessId': businessId2, 'reviews': bagOfReviews1, 'cluster': clustersTwo, 'location': state2}
+threeStarReviews = { 'businessId': businessId3, 'reviews': bagOfReviews1, 'cluster': clustersThree, 'location': state3}
+fourStarReviews = { 'businessId': businessId4, 'reviews': bagOfReviews1, 'cluster': clustersFour, 'location': state4}
+fiveStarReviews = { 'businessId': businessId5, 'reviews': bagOfReviews1, 'cluster': clustersFive, 'location': state5}
+
+reviewFrame1 = pd.DataFrame(oneStarReviews, index = [clustersOne] , columns = ['businessId', 'cluster', 'state'])
+reviewFrame2 = pd.DataFrame(oneStarReviews, index = [clustersTwo] , columns = ['businessId', 'cluster', 'state'])
+reviewFrame3 = pd.DataFrame(oneStarReviews, index = [clustersThree] , columns = ['businessId', 'cluster', 'state'])
+reviewFrame4 = pd.DataFrame(oneStarReviews, index = [clustersFour] , columns = ['businessId', 'cluster', 'state'])
+reviewFrame5 = pd.DataFrame(oneStarReviews, index = [clustersFive] , columns = ['businessId', 'cluster', 'state'])
 
 reviewFrame1['cluster'].value_counts()
 reviewFrame2['cluster'].value_counts()
@@ -247,31 +267,125 @@ reviewFrame3['cluster'].value_counts()
 reviewFrame4['cluster'].value_counts()
 reviewFrame5['cluster'].value_counts()
 
-groupOne = reviewFrame1['businessId'].groupby(reviewFrame1['cluster'])
-groupTwo = reviewFrame2['businessId'].groupby(reviewFrame2['cluster'])
-groupThree = reviewFrame3['businessId'].groupby(reviewFrame3['cluster'])
-groupFour = reviewFrame4['businessId'].groupby(reviewFrame4['cluster'])
-groupFive = reviewFrame5['businessId'].groupby(reviewFrame5['cluster'])
+# Not required for now... since we don't have any kind of ranks for the reviews
+# groupOne = reviewFrame1['businessId'].groupby(reviewFrame1['cluster'])
+# groupTwo = reviewFrame2['businessId'].groupby(reviewFrame2['cluster'])
+# groupThree = reviewFrame3['businessId'].groupby(reviewFrame3['cluster'])
+# groupFour = reviewFrame4['businessId'].groupby(reviewFrame4['cluster'])
+# groupFive = reviewFrame5['businessId'].groupby(reviewFrame5['cluster'])
+#
+# groupOne.mean()
+# groupTwo.mean()
+# groupThree.mean()
+# groupFour.mean()
+# groupFive.mean()
 
-groupOne.mean()
-groupTwo.mean()
-groupThree.mean()
-groupFour.mean()
-groupFive.mean()
 
-
-## Needs editing
-print("Top terms per cluster:")
+# Cluster 1
+print("Top terms per clusterOne:")
 print()
-order_centroids = km.cluster_centers_.argsort()[:, ::-1]
+orderCentroids = km1.cluster_centers_.argsort()[:, ::-1]
 for i in range(numClusters):
     print("Cluster %d words:" % i)
-    for ind in order_centroids[i, :6]:
+    for ind in orderCentroids[i, :6]:
         print(' %s' % vocabFrame1.ix[terms[ind].split(' ')].values.tolist()[0][0].encode('utf-8', 'ignore'))
     print()
     print()
-    print("Cluster %d titles:" % i)
-    for title in vocabFrame1.ix[i]['title'].values.tolist():
-        print(' %s, ' % title)
+    print("Cluster %d BusinessId:" % i)
+    for feature in vocabFrame1.ix[i]['businessId'].values.tolist():
+        print(' %s, ' % feature)
     print()
     print()
+
+# Cluster 2
+print("Top terms per clusterOne:")
+print()
+orderCentroids = km2.cluster_centers_.argsort()[:, ::-1]
+for i in range(numClusters):
+    print("Cluster %d words:" % i)
+    for ind in orderCentroids[i, :6]:
+        print(' %s' % vocabFrame2.ix[terms[ind].split(' ')].values.tolist()[0][0].encode('utf-8', 'ignore'))
+    print()
+    print()
+    print("Cluster %d BusinessId:" % i)
+    for feature in vocabFrame2.ix[i]['businessId'].values.tolist():
+        print(' %s, ' % feature)
+    print()
+    print()
+
+# Cluster 3
+print("Top terms per clusterOne:")
+print()
+orderCentroids = km3.cluster_centers_.argsort()[:, ::-1]
+for i in range(numClusters):
+    print("Cluster %d words:" % i)
+    for ind in orderCentroids[i, :6]:
+        print(' %s' % vocabFrame3.ix[terms[ind].split(' ')].values.tolist()[0][0].encode('utf-8', 'ignore'))
+    print()
+    print()
+    print("Cluster %d BusinessId:" % i)
+    for feature in vocabFrame3.ix[i]['businessId'].values.tolist():
+        print(' %s, ' % feature)
+    print()
+    print()
+
+# Cluster 4
+print("Top terms per clusterOne:")
+print()
+orderCentroids = km4.cluster_centers_.argsort()[:, ::-1]
+for i in range(numClusters):
+    print("Cluster %d words:" % i)
+    for ind in orderCentroids[i, :6]:
+        print(' %s' % vocabFrame4.ix[terms[ind].split(' ')].values.tolist()[0][0].encode('utf-8', 'ignore'))
+    print()
+    print()
+    print("Cluster %d BusinessId:" % i)
+    for feature in vocabFrame4.ix[i]['businessId'].values.tolist():
+        print(' %s, ' % feature)
+    print()
+    print()
+
+# Cluster 5
+print("Top terms per clusterOne:")
+print()
+orderCentroids = km5.cluster_centers_.argsort()[:, ::-1]
+for i in range(numClusters):
+    print("Cluster %d words:" % i)
+    for ind in orderCentroids[i, :6]:
+        print(' %s' % vocabFrame5.ix[terms[ind].split(' ')].values.tolist()[0][0].encode('utf-8', 'ignore'))
+    print()
+    print()
+    print("Cluster %d BusinessId:" % i)
+    for feature in vocabFrame5.ix[i]['businessId'].values.tolist():
+        print(' %s, ' % feature)
+    print()
+    print()
+
+reviewFrame1['bizId'] = reviewFrame1['businessId']
+reviewFrame2['bizId'] = reviewFrame2['businessId']
+reviewFrame3['bizId'] = reviewFrame3['businessId']
+reviewFrame4['bizId'] = reviewFrame4['businessId']
+reviewFrame5['bizId'] = reviewFrame5['businessId']
+
+print(reviewFrame1[['bizId']].loc[reviewFrame1['cluster'] == 1].to_html(index=False))
+print(reviewFrame2[['bizId']].loc[reviewFrame2['cluster'] == 1].to_html(index=False))
+print(reviewFrame3[['bizId']].loc[reviewFrame3['cluster'] == 1].to_html(index=False))
+print(reviewFrame4[['bizId']].loc[reviewFrame4['cluster'] == 1].to_html(index=False))
+print(reviewFrame5[['bizId']].loc[reviewFrame5['cluster'] == 1].to_html(index=False))
+
+
+mds = MDS(n_components=2, dissimilarity="precomputed", random_state=1)
+
+pos1 = mds.fit_transform(dist1)
+pos2 = mds.fit_transform(dist2)  
+pos3 = mds.fit_transform(dist3)  
+pos4 = mds.fit_transform(dist4)  
+pos5 = mds.fit_transform(dist5)  
+
+xs1, ys1 = pos1[:, 0], pos1[:, 1]
+xs2, ys2 = pos2[:, 0], pos2[:, 1]
+xs3, ys3 = pos3[:, 0], pos3[:, 1]
+xs4, ys4 = pos4[:, 0], pos4[:, 1]
+xs5, ys5 = pos5[:, 0], pos5[:, 1]
+
+# "In [49]" Visualizing document clusters
