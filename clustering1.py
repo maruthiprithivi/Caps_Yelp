@@ -45,6 +45,11 @@ businessId2 = list()
 businessId3 = list()
 businessId4 = list()
 businessId5 = list()
+userId1 = list()
+userId2 = list()
+userId3 = list()
+userId4 = list()
+userId5 = list()
 state1 = list()
 state2 = list()
 state3 = list()
@@ -143,6 +148,7 @@ for i in d1:
     if i[13] == "1":
         bagOfReviews1.append(i[14])
         businessId1.append(i[0])
+        userId1.append(i[12])
         state1.append(i[5])
         allwordsStemmed1 = textPrepStem(i[14])
         totalvocabStemmed1.extend(allwordsStemmed1)
@@ -152,6 +158,7 @@ for i in d1:
     elif i[13] == "2":
         bagOfReviews2.append(i[14])
         businessId2.append(i[0])
+        userId2.append(i[12])
         state2.append(i[5])
         allwordsStemmed2 = textPrepStem(i[14])
         totalvocabStemmed2.extend(allwordsStemmed2)
@@ -161,6 +168,7 @@ for i in d1:
     elif i[13] == "3":
         bagOfReviews3.append(i[14])
         businessId3.append(i[0])
+        userId3.append(i[12])
         state3.append(i[5])
         allwordsStemmed3 = textPrepStem(i[14])
         totalvocabStemmed3.extend(allwordsStemmed3)
@@ -170,6 +178,7 @@ for i in d1:
     elif i[13] == "4":
         bagOfReviews4.append(i[14])
         businessId4.append(i[0])
+        userId4.append(i[12])
         state4.append(i[5])
         allwordsStemmed4 = textPrepStem(i[14])
         totalvocabStemmed4.extend(allwordsStemmed4)
@@ -179,6 +188,7 @@ for i in d1:
     elif i[13] == "5":
         bagOfReviews5.append(i[14])
         businessId5.append(i[0])
+        userId5.append(i[12])
         state5.append(i[5])
         allwordsStemmed5 = textPrepStem(i[14])
         totalvocabStemmed5.extend(allwordsStemmed5)
@@ -268,17 +278,17 @@ clustersFive = km5.labels_.tolist()
 # print clustersFive
  
  
-oneStarReviews = { 'businessId': businessId1, 'reviews': bagOfReviews1, 'cluster': clustersOne, 'location': state1}
-twoStarReviews = { 'businessId': businessId2, 'reviews': bagOfReviews1, 'cluster': clustersTwo, 'location': state2}
-threeStarReviews = { 'businessId': businessId3, 'reviews': bagOfReviews1, 'cluster': clustersThree, 'location': state3}
-fourStarReviews = { 'businessId': businessId4, 'reviews': bagOfReviews1, 'cluster': clustersFour, 'location': state4}
-fiveStarReviews = { 'businessId': businessId5, 'reviews': bagOfReviews1, 'cluster': clustersFive, 'location': state5}
+oneStarReviews = { 'businessId': businessId1, 'reviews': bagOfReviews1, 'cluster': clustersOne, 'location': state1, 'userId': userId1}
+twoStarReviews = { 'businessId': businessId2, 'reviews': bagOfReviews1, 'cluster': clustersTwo, 'location': state2, 'userId': userId2}
+threeStarReviews = { 'businessId': businessId3, 'reviews': bagOfReviews1, 'cluster': clustersThree, 'location': state3, 'userId': userId3}
+fourStarReviews = { 'businessId': businessId4, 'reviews': bagOfReviews1, 'cluster': clustersFour, 'location': state4, 'userId': userId4}
+fiveStarReviews = { 'businessId': businessId5, 'reviews': bagOfReviews1, 'cluster': clustersFive, 'location': state5, 'userId': userId5}
  
-reviewFrame1 = pd.DataFrame(oneStarReviews, index = [clustersOne] , columns = ['businessId', 'cluster', 'state'])
-reviewFrame2 = pd.DataFrame(twoStarReviews, index = [clustersTwo] , columns = ['businessId', 'cluster', 'state'])
-reviewFrame3 = pd.DataFrame(threeStarReviews, index = [clustersThree] , columns = ['businessId', 'cluster', 'state'])
-reviewFrame4 = pd.DataFrame(fourStarReviews, index = [clustersFour] , columns = ['businessId', 'cluster', 'state'])
-reviewFrame5 = pd.DataFrame(fiveStarReviews, index = [clustersFive] , columns = ['businessId', 'cluster', 'state'])
+reviewFrame1 = pd.DataFrame(oneStarReviews, index = [clustersOne] , columns = ['businessId', 'cluster', 'state', 'userId'])
+reviewFrame2 = pd.DataFrame(twoStarReviews, index = [clustersTwo] , columns = ['businessId', 'cluster', 'state', 'userId'])
+reviewFrame3 = pd.DataFrame(threeStarReviews, index = [clustersThree] , columns = ['businessId', 'cluster', 'state', 'userId'])
+reviewFrame4 = pd.DataFrame(fourStarReviews, index = [clustersFour] , columns = ['businessId', 'cluster', 'state', 'userId'])
+reviewFrame5 = pd.DataFrame(fiveStarReviews, index = [clustersFive] , columns = ['businessId', 'cluster', 'state', 'userId'])
  
 reviewFrame1['cluster'].value_counts()
 reviewFrame2['cluster'].value_counts()
@@ -307,9 +317,9 @@ orderCentroids = km1.cluster_centers_.argsort()[:, ::-1]
 for i in range(numClusters):
     print("Cluster %d words:" % i)
     print len(orderCentroids)
-    for ind in orderCentroids[i, :]:
-        print ind
-        print(' %s' % vocabFrame1.ix[terms[ind].split(' ')].values.tolist()[0][0].encode('utf-8', 'ignore'))
+    # for ind in orderCentroids[i, :]:
+    #     print ind
+    #     print(' %s' % vocabFrame1.ix[terms[ind].split(' ')].values.tolist()[0][0].encode('utf-8', 'ignore'))
     print()
     print()
     print("Cluster %d BusinessId:" % i)
@@ -325,8 +335,8 @@ orderCentroids = km2.cluster_centers_.argsort()[:, ::-1]
 for i in range(numClusters):
     print("Cluster %d words:" % i)
     print len(orderCentroids)
-    for ind in orderCentroids[i, :]:
-        print(' %s' % vocabFrame2.ix[terms[ind].split(' ')].values.tolist()[0][0].encode('utf-8', 'ignore'))
+    # for ind in orderCentroids[i, :]:
+    #     print(' %s' % vocabFrame2.ix[terms[ind].split(' ')].values.tolist()[0][0].encode('utf-8', 'ignore'))
     print()
     print()
     print("Cluster %d BusinessId:" % i)
@@ -342,8 +352,8 @@ orderCentroids = km3.cluster_centers_.argsort()[:, ::-1]
 for i in range(numClusters):
     print("Cluster %d words:" % i)
     print len(orderCentroids)
-    for ind in orderCentroids[i, :]:
-        print(' %s' % vocabFrame3.ix[terms[ind].split(' ')].values.tolist()[0][0].encode('utf-8', 'ignore'))
+    # for ind in orderCentroids[i, :]:
+    #     print(' %s' % vocabFrame3.ix[terms[ind].split(' ')].values.tolist()[0][0].encode('utf-8', 'ignore'))
     print()
     print()
     print("Cluster %d BusinessId:" % i)
@@ -359,8 +369,8 @@ orderCentroids = km4.cluster_centers_.argsort()[:, ::-1]
 for i in range(numClusters):
     print("Cluster %d words:" % i)
     print len(orderCentroids)
-    for ind in orderCentroids[i, :]:
-        print(' %s' % vocabFrame4.ix[terms[ind].split(' ')].values.tolist()[0][0].encode('utf-8', 'ignore'))
+    # for ind in orderCentroids[i, :]:
+    #     print(' %s' % vocabFrame4.ix[terms[ind].split(' ')].values.tolist()[0][0].encode('utf-8', 'ignore'))
     print()
     print()
     print("Cluster %d BusinessId:" % i)
@@ -376,8 +386,8 @@ orderCentroids = km5.cluster_centers_.argsort()[:, ::-1]
 for i in range(numClusters):
     print("Cluster %d words:" % i)
     print len(orderCentroids)
-    for ind in orderCentroids[i, :]:
-        print(' %s' % vocabFrame5.ix[terms[ind].split(' ')].values.tolist()[0][0].encode('utf-8', 'ignore'))
+    # for ind in orderCentroids[i, :]:
+    #     print(' %s' % vocabFrame5.ix[terms[ind].split(' ')].values.tolist()[0][0].encode('utf-8', 'ignore'))
     print()
     print()
     print("Cluster %d BusinessId:" % i)
@@ -414,5 +424,158 @@ xs4, ys4 = pos4[:, 0], pos4[:, 1]
 xs5, ys5 = pos5[:, 0], pos5[:, 1]
  
 # "In [49]" Visualizing document clusters
- 
+
+#set up colors per clusters using a dict
+cluster_colors = {0: '#1b9e77', 1: '#d95f02', 2: '#7570b3', 3: '#e7298a', 4: '#66a61e'}
+
+#set up cluster names using a dict
+cluster_names = {0: 'Family, home, war',
+                 1: 'Police, killed, murders',
+                 2: 'Father, New York, brothers',
+                 3: 'Dance, singing, love',
+                 4: 'Killed, soldiers, captain'}
+
+# matplotlib inline
+#create data frame that has the result of the MDS plus the cluster numbers and titles
+df1 = pd.DataFrame(dict(x=xs1, y=ys1, label=clustersOne, title=businessId1))
+df2 = pd.DataFrame(dict(x=xs2, y=ys2, label=clustersTwo, title=businessId2))
+df3 = pd.DataFrame(dict(x=xs3, y=ys3, label=clustersThree, title=businessId3))
+df4 = pd.DataFrame(dict(x=xs4, y=ys4, label=clustersFour, title=businessId4))
+df5 = pd.DataFrame(dict(x=xs5, y=ys5, label=clustersFive, title=businessId5))
+
+#group by cluster
+groups1 = df1.groupby('label')
+groups2 = df2.groupby('label')
+groups3 = df3.groupby('label')
+groups4 = df4.groupby('label')
+groups5 = df5.groupby('label')
+
+
+# set up plot
+fig, ax = plt.subplots(figsize=(17, 9)) # set size
+ax.margins(0.05) # Optional, just adds 5% padding to the autoscaling
+
+#iterate through groups to layer the plot
+#note that I use the cluster_name and cluster_color dicts with the 'name' lookup to return the appropriate color/label
+
+# 1 star rating cluster
+for name, group in groups1:
+    ax.plot(group.x, group.y, marker='o', linestyle='', ms=12, label=cluster_names[name], color=cluster_colors[name], mec='none')
+    ax.set_aspect('auto')
+    ax.tick_params(\
+        axis= 'x',          # changes apply to the x-axis
+        which='both',      # both major and minor ticks are affected
+        bottom='off',      # ticks along the bottom edge are off
+        top='off',         # ticks along the top edge are off
+        labelbottom='off')
+    ax.tick_params(\
+        axis= 'y',         # changes apply to the y-axis
+        which='both',      # both major and minor ticks are affected
+        left='off',      # ticks along the bottom edge are off
+        top='off',         # ticks along the top edge are off
+        labelleft='off')
+ax.legend(numpoints=1)  #show legend with only 1 point
+#add label in x,y position with the label as the film title
+for i in range(len(df1)):
+    ax.text(df1.ix[i]['x'], df1.ix[i]['y'], df1.ix[i]['title'], size=8)
+# plt.show() #show the plot
+#uncomment the below to save the plot if need be
+plt.savefig('oneStarCluster.png', dpi=200)
+
+# 2 star rating cluster
+for name, group in groups2:
+    ax.plot(group.x, group.y, marker='o', linestyle='', ms=12, label=cluster_names[name], color=cluster_colors[name], mec='none')
+    ax.set_aspect('auto')
+    ax.tick_params(\
+        axis= 'x',          # changes apply to the x-axis
+        which='both',      # both major and minor ticks are affected
+        bottom='off',      # ticks along the bottom edge are off
+        top='off',         # ticks along the top edge are off
+        labelbottom='off')
+    ax.tick_params(\
+        axis= 'y',         # changes apply to the y-axis
+        which='both',      # both major and minor ticks are affected
+        left='off',      # ticks along the bottom edge are off
+        top='off',         # ticks along the top edge are off
+        labelleft='off')
+ax.legend(numpoints=1)  #show legend with only 1 point
+#add label in x,y position with the label as the film title
+for i in range(len(df2)):
+    ax.text(df2.ix[i]['x'], df2.ix[i]['y'], df2.ix[i]['title'], size=8)
+# plt.show() #show the plot
+#uncomment the below to save the plot if need be
+plt.savefig('twoStarCluster.png', dpi=200)
+
+# 3 star rating cluster
+for name, group in groups3:
+    ax.plot(group.x, group.y, marker='o', linestyle='', ms=12, label=cluster_names[name], color=cluster_colors[name], mec='none')
+    ax.set_aspect('auto')
+    ax.tick_params(\
+        axis= 'x',          # changes apply to the x-axis
+        which='both',      # both major and minor ticks are affected
+        bottom='off',      # ticks along the bottom edge are off
+        top='off',         # ticks along the top edge are off
+        labelbottom='off')
+    ax.tick_params(\
+        axis= 'y',         # changes apply to the y-axis
+        which='both',      # both major and minor ticks are affected
+        left='off',      # ticks along the bottom edge are off
+        top='off',         # ticks along the top edge are off
+        labelleft='off')
+ax.legend(numpoints=1)  #show legend with only 1 point
+#add label in x,y position with the label as the film title
+for i in range(len(df3)):
+    ax.text(df3.ix[i]['x'], df3.ix[i]['y'], df3.ix[i]['title'], size=8)
+# plt.show() #show the plot
+#uncomment the below to save the plot if need be
+plt.savefig('threeStarCluster.png', dpi=200)
+
+# 4 star rating cluster
+for name, group in groups4:
+    ax.plot(group.x, group.y, marker='o', linestyle='', ms=12, label=cluster_names[name], color=cluster_colors[name], mec='none')
+    ax.set_aspect('auto')
+    ax.tick_params(\
+        axis= 'x',          # changes apply to the x-axis
+        which='both',      # both major and minor ticks are affected
+        bottom='off',      # ticks along the bottom edge are off
+        top='off',         # ticks along the top edge are off
+        labelbottom='off')
+    ax.tick_params(\
+        axis= 'y',         # changes apply to the y-axis
+        which='both',      # both major and minor ticks are affected
+        left='off',      # ticks along the bottom edge are off
+        top='off',         # ticks along the top edge are off
+        labelleft='off')
+ax.legend(numpoints=1)  #show legend with only 1 point
+#add label in x,y position with the label as the film title
+for i in range(len(df4)):
+    ax.text(df4.ix[i]['x'], df4.ix[i]['y'], df4.ix[i]['title'], size=8)
+# plt.show() #show the plot
+#uncomment the below to save the plot if need be
+plt.savefig('fourStarCluster.png', dpi=200)
+
+# 5 star rating cluster
+for name, group in groups5:
+    ax.plot(group.x, group.y, marker='o', linestyle='', ms=12, label=cluster_names[name], color=cluster_colors[name], mec='none')
+    ax.set_aspect('auto')
+    ax.tick_params(\
+        axis= 'x',          # changes apply to the x-axis
+        which='both',      # both major and minor ticks are affected
+        bottom='off',      # ticks along the bottom edge are off
+        top='off',         # ticks along the top edge are off
+        labelbottom='off')
+    ax.tick_params(\
+        axis= 'y',         # changes apply to the y-axis
+        which='both',      # both major and minor ticks are affected
+        left='off',      # ticks along the bottom edge are off
+        top='off',         # ticks along the top edge are off
+        labelleft='off')
+ax.legend(numpoints=1)  #show legend with only 1 point
+#add label in x,y position with the label as the film title
+for i in range(len(df5)):
+    ax.text(df5.ix[i]['x'], df5.ix[i]['y'], df5.ix[i]['title'], size=8)
+# plt.show() #show the plot
+#uncomment the below to save the plot if need be
+plt.savefig('fiveStarCluster.png', dpi=200)
+
 print "Hakuna MaTaTaAaAaaaaA!!"
