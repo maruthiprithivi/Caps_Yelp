@@ -10,7 +10,7 @@ from collections import Counter
 from nltk.stem.porter import * #Porter stemming function
 from nltk.tokenize import RegexpTokenizer #Regular Expression Based Tokenizer
 from nltk.corpus import stopwords #Stopwords List
-import xlsxwriter as xlS
+# import xlsxwriter as xlS
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
 from sklearn.cluster import KMeans
@@ -23,6 +23,7 @@ from sklearn.manifold import MDS
 from nltk.tag import pos_tag
 from scipy.cluster.hierarchy import ward, dendrogram
 import io
+import mpld3 as mpld3
  
 MDS()
 totalvocabStemmed1 = []
@@ -35,6 +36,11 @@ totalvocabStemmed4 = []
 totalvocabTokenized4 = []
 totalvocabStemmed5 = []
 totalvocabTokenized5 = []
+ranks1 = []
+ranks2 = []
+ranks3 = []
+ranks4 = []
+ranks5 = []
 bagOfReviews1 = list()
 bagOfReviews2 = list()
 bagOfReviews3 = list()
@@ -45,6 +51,11 @@ businessId2 = list()
 businessId3 = list()
 businessId4 = list()
 businessId5 = list()
+businessName1 = list()
+businessName2 = list()
+businessName3 = list()
+businessName4 = list()
+businessName5 = list()
 userId1 = list()
 userId2 = list()
 userId3 = list()
@@ -60,9 +71,14 @@ r2 = 0
 r3 = 0
 r4 = 0
 r5 = 0
- 
-reload(sys)
-sys.setdefaultencoding('utf8')
+x1 = 6
+x2 = 6
+x3 = 6
+x4 = 6
+x5 = 6
+
+# reload(sys)
+# sys.setdefaultencoding('utf8')
 en_sw = set(stopwords.words('english'))
  
 # Output
@@ -141,13 +157,14 @@ def textPrep(review):
 # dataOpen1 = codecs.open("Dataset/Data_101.csv", 'rU')
 dataOpen1 = io.open("Dataset/aspectDataMerged.csv", encoding="ISO-8859-1", errors="ignore")
 d1 = csv.reader(dataOpen1,delimiter=',',quotechar='"', dialect=csv.excel_tab)
-d1.next()
+next(d1)
  
 for i in d1:
     # Slicing the dataset based on the star ratings
     if i[13] == "1":
         bagOfReviews1.append(i[14])
         businessId1.append(i[0])
+        businessName1.append(i[2])
         userId1.append(i[12])
         state1.append(i[5])
         allwordsStemmed1 = textPrepStem(i[14])
@@ -158,6 +175,7 @@ for i in d1:
     elif i[13] == "2":
         bagOfReviews2.append(i[14])
         businessId2.append(i[0])
+        businessName2.append(i[2])
         userId2.append(i[12])
         state2.append(i[5])
         allwordsStemmed2 = textPrepStem(i[14])
@@ -168,6 +186,7 @@ for i in d1:
     elif i[13] == "3":
         bagOfReviews3.append(i[14])
         businessId3.append(i[0])
+        businessName3.append(i[2])
         userId3.append(i[12])
         state3.append(i[5])
         allwordsStemmed3 = textPrepStem(i[14])
@@ -178,6 +197,7 @@ for i in d1:
     elif i[13] == "4":
         bagOfReviews4.append(i[14])
         businessId4.append(i[0])
+        businessName4.append(i[2])
         userId4.append(i[12])
         state4.append(i[5])
         allwordsStemmed4 = textPrepStem(i[14])
@@ -188,6 +208,7 @@ for i in d1:
     elif i[13] == "5":
         bagOfReviews5.append(i[14])
         businessId5.append(i[0])
+        businessName5.append(i[2])
         userId5.append(i[12])
         state5.append(i[5])
         allwordsStemmed5 = textPrepStem(i[14])
@@ -202,7 +223,16 @@ print ("3 star rating count %d " % r3)
 print ("4 star rating count %d " % r4)
 print ("5 star rating count %d " % r5)
  
- 
+for i in range(0,len(businessId1)):
+    ranks1.append(i)
+for i in range(0,len(businessId2)):
+    ranks2.append(i)
+for i in range(0,len(businessId3)):
+    ranks3.append(i)
+for i in range(0,len(businessId4)):
+    ranks4.append(i)
+for i in range(0,len(businessId5)):
+    ranks5.append(i)
  
 vocabFrame1 = pd.DataFrame({'words': totalvocabTokenized1}, index = totalvocabStemmed1)
 vocabFrame2 = pd.DataFrame({'words': totalvocabTokenized2}, index = totalvocabStemmed2)
@@ -211,7 +241,7 @@ vocabFrame4 = pd.DataFrame({'words': totalvocabTokenized4}, index = totalvocabSt
 vocabFrame5 = pd.DataFrame({'words': totalvocabTokenized5}, index = totalvocabStemmed5)
  
 tfidfVectorizer = TfidfVectorizer(max_df=0.8, max_features=20000000,
-                                 min_df=0.4, stop_words='english',
+                                 min_df=0.2, stop_words='english',
                                  use_idf=True, tokenizer=textPrepStem, ngram_range=(1,3))
  
 tfidfMatrix1 = tfidfVectorizer.fit_transform(bagOfReviews1)
@@ -254,15 +284,15 @@ clustersThree = km3.labels_.tolist()
 clustersFour = km4.labels_.tolist()
 clustersFive = km5.labels_.tolist()
  
-joblib.dump(km1,  'doc_cluster.pkl')
+# joblib.dump(km1,  'doc_cluster.pkl')
 km1 = joblib.load('doc_cluster.pkl')
-joblib.dump(km2,  'doc_cluster.pkl')
+# joblib.dump(km2,  'doc_cluster.pkl')
 km2 = joblib.load('doc_cluster.pkl')
-joblib.dump(km3,  'doc_cluster.pkl')
+# joblib.dump(km3,  'doc_cluster.pkl')
 km3 = joblib.load('doc_cluster.pkl')
-joblib.dump(km4,  'doc_cluster.pkl')
+# joblib.dump(km4,  'doc_cluster.pkl')
 km4 = joblib.load('doc_cluster.pkl')
-joblib.dump(km5,  'doc_cluster.pkl')
+# joblib.dump(km5,  'doc_cluster.pkl')
 km5 = joblib.load('doc_cluster.pkl')
  
 clustersOne = km1.labels_.tolist()
@@ -278,17 +308,17 @@ clustersFive = km5.labels_.tolist()
 # print clustersFive
  
  
-oneStarReviews = { 'businessId': businessId1, 'reviews': bagOfReviews1, 'cluster': clustersOne, 'location': state1, 'userId': userId1}
-twoStarReviews = { 'businessId': businessId2, 'reviews': bagOfReviews1, 'cluster': clustersTwo, 'location': state2, 'userId': userId2}
-threeStarReviews = { 'businessId': businessId3, 'reviews': bagOfReviews1, 'cluster': clustersThree, 'location': state3, 'userId': userId3}
-fourStarReviews = { 'businessId': businessId4, 'reviews': bagOfReviews1, 'cluster': clustersFour, 'location': state4, 'userId': userId4}
-fiveStarReviews = { 'businessId': businessId5, 'reviews': bagOfReviews1, 'cluster': clustersFive, 'location': state5, 'userId': userId5}
+oneStarReviews = { 'businessId': businessId1, 'rank': ranks1, 'reviews': bagOfReviews1, 'cluster': clustersOne, 'location': state1, 'userId': userId1, 'businessName': businessName1}
+twoStarReviews = { 'businessId': businessId2, 'rank': ranks2, 'reviews': bagOfReviews1, 'cluster': clustersTwo, 'location': state2, 'userId': userId2, 'businessName': businessName2}
+threeStarReviews = { 'businessId': businessId3, 'rank': ranks3, 'reviews': bagOfReviews1, 'cluster': clustersThree, 'location': state3, 'userId': userId3, 'businessName': businessName3}
+fourStarReviews = { 'businessId': businessId4, 'rank': ranks4, 'reviews': bagOfReviews1, 'cluster': clustersFour, 'location': state4, 'userId': userId4, 'businessName': businessName4}
+fiveStarReviews = { 'businessId': businessId5, 'rank': ranks5, 'reviews': bagOfReviews1, 'cluster': clustersFive, 'location': state5, 'userId': userId5, 'businessName': businessName5}
  
-reviewFrame1 = pd.DataFrame(oneStarReviews, index = [clustersOne] , columns = ['businessId', 'cluster', 'state', 'userId'])
-reviewFrame2 = pd.DataFrame(twoStarReviews, index = [clustersTwo] , columns = ['businessId', 'cluster', 'state', 'userId'])
-reviewFrame3 = pd.DataFrame(threeStarReviews, index = [clustersThree] , columns = ['businessId', 'cluster', 'state', 'userId'])
-reviewFrame4 = pd.DataFrame(fourStarReviews, index = [clustersFour] , columns = ['businessId', 'cluster', 'state', 'userId'])
-reviewFrame5 = pd.DataFrame(fiveStarReviews, index = [clustersFive] , columns = ['businessId', 'cluster', 'state', 'userId'])
+reviewFrame1 = pd.DataFrame(oneStarReviews, index = [clustersOne] , columns = ['businessId', 'rank', 'cluster', 'state', 'userId'])
+reviewFrame2 = pd.DataFrame(twoStarReviews, index = [clustersTwo] , columns = ['businessId', 'rank', 'cluster', 'state', 'userId'])
+reviewFrame3 = pd.DataFrame(threeStarReviews, index = [clustersThree] , columns = ['businessId', 'rank', 'cluster', 'state', 'userId'])
+reviewFrame4 = pd.DataFrame(fourStarReviews, index = [clustersFour] , columns = ['businessId', 'rank', 'cluster', 'state', 'userId'])
+reviewFrame5 = pd.DataFrame(fiveStarReviews, index = [clustersFive] , columns = ['businessId', 'rank', 'cluster', 'state', 'userId'])
  
 reviewFrame1['cluster'].value_counts()
 reviewFrame2['cluster'].value_counts()
@@ -311,86 +341,97 @@ reviewFrame5['cluster'].value_counts()
  
  
 # Cluster 1
-print("Top terms per clusterOne:")
+print("Top terms for clusterOne:")
 print()
 orderCentroids = km1.cluster_centers_.argsort()[:, ::-1]
+print (len(orderCentroids))
 for i in range(numClusters):
-    print("Cluster %d words:" % i)
-    print len(orderCentroids)
-    # for ind in orderCentroids[i, :]:
-    #     print ind
-    #     print(' %s' % vocabFrame1.ix[terms[ind].split(' ')].values.tolist()[0][0].encode('utf-8', 'ignore'))
+    print("Cluster %d words:" % i, end='')
+    x1 = len(orderCentroids[i,:]) - 1
+    print ("x1: ", x1)
+    if x1 > 6:
+        x1 = 6
+    print ("x1: ", x1)
+    # for ind in orderCentroids[i, :6]:
+    #     print(' %s' % vocabFrame1.ix[terms[ind].split(' ')].values.tolist()[0][0].encode('utf-8', 'ignore'), end=',')
     print()
     print()
-    print("Cluster %d BusinessId:" % i)
+    print("Cluster %d BusinessId:" % i, end='')
     for feature in reviewFrame1.ix[i]['businessId'].values.tolist():
         print(' %s, ' % feature)
     print()
     print()
  
 # Cluster 2
-print("Top terms per clusterOne:")
+print("Top terms for clusterTwo:")
 print()
 orderCentroids = km2.cluster_centers_.argsort()[:, ::-1]
+if len(orderCentroids) < 6:
+    x2 = len(orderCentroids) + 1
 for i in range(numClusters):
-    print("Cluster %d words:" % i)
-    print len(orderCentroids)
-    # for ind in orderCentroids[i, :]:
-    #     print(' %s' % vocabFrame2.ix[terms[ind].split(' ')].values.tolist()[0][0].encode('utf-8', 'ignore'))
+    print("Cluster %d words:" % i, end='')
+    # for ind in orderCentroids[i, :x2]:
+    #     print(' %s' % vocabFrame2.ix[terms[ind].split(' ')].values.tolist()[0][0].encode('utf-8', 'ignore'), end=',')
     print()
     print()
-    print("Cluster %d BusinessId:" % i)
+    print("Cluster %d BusinessId:" % i, end='')
     for feature in reviewFrame2.ix[i]['businessId'].values.tolist():
         print(' %s, ' % feature)
     print()
     print()
  
 # Cluster 3
-print("Top terms per clusterOne:")
+print("Top terms for clusterThree:")
 print()
 orderCentroids = km3.cluster_centers_.argsort()[:, ::-1]
+if len(orderCentroids) < 6:
+    x3 = len(orderCentroids) + 1
 for i in range(numClusters):
-    print("Cluster %d words:" % i)
-    print len(orderCentroids)
-    # for ind in orderCentroids[i, :]:
-    #     print(' %s' % vocabFrame3.ix[terms[ind].split(' ')].values.tolist()[0][0].encode('utf-8', 'ignore'))
+    print("Cluster %d words:" % i, end='')
+    print (len(orderCentroids))
+    # for ind in orderCentroids[i, :x3]:
+    #     print(' %s' % vocabFrame3.ix[terms[ind].split(' ')].values.tolist()[0][0].encode('utf-8', 'ignore'), end=',')
     print()
     print()
-    print("Cluster %d BusinessId:" % i)
+    print("Cluster %d BusinessId:" % i, end='')
     for feature in reviewFrame3.ix[i]['businessId'].values.tolist():
         print(' %s, ' % feature)
     print()
     print()
  
 # Cluster 4
-print("Top terms per clusterOne:")
+print("Top terms for clusterFour:")
 print()
 orderCentroids = km4.cluster_centers_.argsort()[:, ::-1]
+if len(orderCentroids) < 6:
+    x4 = len(orderCentroids) + 1
 for i in range(numClusters):
-    print("Cluster %d words:" % i)
-    print len(orderCentroids)
-    # for ind in orderCentroids[i, :]:
-    #     print(' %s' % vocabFrame4.ix[terms[ind].split(' ')].values.tolist()[0][0].encode('utf-8', 'ignore'))
+    print("Cluster %d words:" % i, end='')
+    print (len(orderCentroids))
+    # for ind in orderCentroids[i, :x4]:
+    #     print(' %s' % vocabFrame4.ix[terms[ind].split(' ')].values.tolist()[0][0].encode('utf-8', 'ignore'), end=',')
     print()
     print()
-    print("Cluster %d BusinessId:" % i)
+    print("Cluster %d BusinessId:" % i, end='')
     for feature in reviewFrame4.ix[i]['businessId'].values.tolist():
         print(' %s, ' % feature)
     print()
     print()
  
 # Cluster 5
-print("Top terms per clusterOne:")
+print("Top terms for clusterFive:")
 print()
 orderCentroids = km5.cluster_centers_.argsort()[:, ::-1]
+if len(orderCentroids) < 6:
+    x5 = len(orderCentroids) + 1
 for i in range(numClusters):
-    print("Cluster %d words:" % i)
-    print len(orderCentroids)
+    print("Cluster %d words:" % i, end='')
+    print (len(orderCentroids))
     # for ind in orderCentroids[i, :]:
-    #     print(' %s' % vocabFrame5.ix[terms[ind].split(' ')].values.tolist()[0][0].encode('utf-8', 'ignore'))
+    #     print(' %s' % vocabFrame5.ix[terms[ind].split(' ')].values.tolist()[0][0].encode('utf-8', 'ignore'), end=',')
     print()
     print()
-    print("Cluster %d BusinessId:" % i)
+    print("Cluster %d BusinessId:" % i, end='')
     for feature in reviewFrame5.ix[i]['businessId'].values.tolist():
         print(' %s, ' % feature)
     print()
@@ -428,6 +469,7 @@ xs5, ys5 = pos5[:, 0], pos5[:, 1]
 #set up colors per clusters using a dict
 cluster_colors = {0: '#1b9e77', 1: '#d95f02', 2: '#7570b3', 3: '#e7298a', 4: '#66a61e'}
 
+# Need to add in the actual words that popup
 #set up cluster names using a dict
 cluster_names = {0: 'Family, home, war',
                  1: 'Police, killed, murders',
@@ -437,11 +479,11 @@ cluster_names = {0: 'Family, home, war',
 
 # matplotlib inline
 #create data frame that has the result of the MDS plus the cluster numbers and titles
-df1 = pd.DataFrame(dict(x=xs1, y=ys1, label=clustersOne, title=businessId1))
-df2 = pd.DataFrame(dict(x=xs2, y=ys2, label=clustersTwo, title=businessId2))
-df3 = pd.DataFrame(dict(x=xs3, y=ys3, label=clustersThree, title=businessId3))
-df4 = pd.DataFrame(dict(x=xs4, y=ys4, label=clustersFour, title=businessId4))
-df5 = pd.DataFrame(dict(x=xs5, y=ys5, label=clustersFive, title=businessId5))
+df1 = pd.DataFrame(dict(x=xs1, y=ys1, label=clustersOne, title=businessName1))
+df2 = pd.DataFrame(dict(x=xs2, y=ys2, label=clustersTwo, title=businessName2))
+df3 = pd.DataFrame(dict(x=xs3, y=ys3, label=clustersThree, title=businessName3))
+df4 = pd.DataFrame(dict(x=xs4, y=ys4, label=clustersFour, title=businessName4))
+df5 = pd.DataFrame(dict(x=xs5, y=ys5, label=clustersFive, title=businessName5))
 
 #group by cluster
 groups1 = df1.groupby('label')
@@ -578,4 +620,227 @@ for i in range(len(df5)):
 #uncomment the below to save the plot if need be
 plt.savefig('fiveStarCluster.png', dpi=200)
 
-print "Hakuna MaTaTaAaAaaaaA!!"
+#define custom toolbar location
+class TopToolbar(mpld3.plugins.PluginBase):
+    """Plugin for moving toolbar to top of figure"""
+
+    JAVASCRIPT = """
+    mpld3.register_plugin("toptoolbar", TopToolbar);
+    TopToolbar.prototype = Object.create(mpld3.Plugin.prototype);
+    TopToolbar.prototype.constructor = TopToolbar;
+    function TopToolbar(fig, props){
+        mpld3.Plugin.call(this, fig, props);
+    };
+
+    TopToolbar.prototype.draw = function(){
+      // the toolbar svg doesn't exist
+      // yet, so first draw it
+      this.fig.toolbar.draw();
+
+      // then change the y position to be
+      // at the top of the figure
+      this.fig.toolbar.toolbar.attr("x", 150);
+      this.fig.toolbar.toolbar.attr("y", 400);
+
+      // then remove the draw function,
+      // so that it is not called again
+      this.fig.toolbar.draw = function() {}
+    }
+    """
+    def __init__(self):
+        self.dict_ = {"type": "toptoolbar"}
+print ("Hakuna MaTaTaAaAaaaaA!!")
+
+#create data frame that has the result of the MDS plus the cluster numbers and titles
+df1 = pd.DataFrame(dict(x=xs1, y=ys1, label=clustersOne, title=businessName1))
+df2 = pd.DataFrame(dict(x=xs2, y=ys2, label=clustersTwo, title=businessName2))
+df3 = pd.DataFrame(dict(x=xs3, y=ys3, label=clustersThree, title=businessName3))
+df4 = pd.DataFrame(dict(x=xs4, y=ys4, label=clustersFour, title=businessName4))
+df5 = pd.DataFrame(dict(x=xs5, y=ys5, label=clustersFive, title=businessName5))
+
+#group by cluster
+groupsOne = df1.groupby('label')
+groupsTwo = df2.groupby('label')
+groupsThree = df3.groupby('label')
+groupsFour = df4.groupby('label')
+groupsFive = df5.groupby('label')
+
+#define custom css to format the font and to remove the axis labeling
+css = """
+text.mpld3-text, div.mpld3-tooltip {
+  font-family:Arial, Helvetica, sans-serif;
+}
+
+g.mpld3-xaxis, g.mpld3-yaxis {
+display: none; }
+"""
+
+# Plot 1
+fig1, ax = plt.subplots(figsize=(14,6)) #set plot size
+ax.margins(0.03) # Optional, just adds 5% padding to the autoscaling
+
+#iterate through groups to layer the plot
+#note that I use the cluster_name and cluster_color dicts with the 'name' lookup to return the appropriate color/label
+for name, group in groupsOne:
+    points = ax.plot(group.x, group.y, marker='o', linestyle='', ms=18, label=cluster_names[name], mec='none', color=cluster_colors[name])
+    ax.set_aspect('auto')
+    labels = [i for i in group.title]
+
+    #set tooltip using points, labels and the already defined 'css'
+    tooltip = mpld3.plugins.PointHTMLTooltip(points[0], labels,
+                                       voffset=10, hoffset=10, css=css)
+    #connect tooltip to fig
+    mpld3.plugins.connect(fig1, tooltip, TopToolbar())
+
+    #set tick marks as blank
+    ax.axes.get_xaxis().set_ticks([])
+    ax.axes.get_yaxis().set_ticks([])
+
+    #set axis as blank
+    ax.axes.get_xaxis().set_visible(False)
+    ax.axes.get_yaxis().set_visible(False)
+
+
+ax.legend(numpoints=1) #show legend with only one dot
+
+mpld3.display() #show the plot
+
+# uncomment the below to export to html
+html = mpld3.fig_to_html(fig1)
+print(html)
+
+# Plot 2
+fig2, ax = plt.subplots(figsize=(14,6)) #set plot size
+ax.margins(0.03) # Optional, just adds 5% padding to the autoscaling
+
+#iterate through groups to layer the plot
+#note that I use the cluster_name and cluster_color dicts with the 'name' lookup to return the appropriate color/label
+for name, group in groupsTwo:
+    points = ax.plot(group.x, group.y, marker='o', linestyle='', ms=18, label=cluster_names[name], mec='none', color=cluster_colors[name])
+    ax.set_aspect('auto')
+    labels = [i for i in group.title]
+
+    #set tooltip using points, labels and the already defined 'css'
+    tooltip = mpld3.plugins.PointHTMLTooltip(points[0], labels,
+                                       voffset=10, hoffset=10, css=css)
+    #connect tooltip to fig
+    mpld3.plugins.connect(fig2, tooltip, TopToolbar())
+
+    #set tick marks as blank
+    ax.axes.get_xaxis().set_ticks([])
+    ax.axes.get_yaxis().set_ticks([])
+
+    #set axis as blank
+    ax.axes.get_xaxis().set_visible(False)
+    ax.axes.get_yaxis().set_visible(False)
+
+
+ax.legend(numpoints=1) #show legend with only one dot
+
+mpld3.display() #show the plot
+
+# uncomment the below to export to html
+html = mpld3.fig_to_html(fig2)
+print(html)
+
+# Plot 3
+fig3, ax = plt.subplots(figsize=(14,6)) #set plot size
+ax.margins(0.03) # Optional, just adds 5% padding to the autoscaling
+
+#iterate through groups to layer the plot
+#note that I use the cluster_name and cluster_color dicts with the 'name' lookup to return the appropriate color/label
+for name, group in groupsThree:
+    points = ax.plot(group.x, group.y, marker='o', linestyle='', ms=18, label=cluster_names[name], mec='none', color=cluster_colors[name])
+    ax.set_aspect('auto')
+    labels = [i for i in group.title]
+
+    #set tooltip using points, labels and the already defined 'css'
+    tooltip = mpld3.plugins.PointHTMLTooltip(points[0], labels,
+                                       voffset=10, hoffset=10, css=css)
+    #connect tooltip to fig
+    mpld3.plugins.connect(fig3, tooltip, TopToolbar())
+
+    #set tick marks as blank
+    ax.axes.get_xaxis().set_ticks([])
+    ax.axes.get_yaxis().set_ticks([])
+
+    #set axis as blank
+    ax.axes.get_xaxis().set_visible(False)
+    ax.axes.get_yaxis().set_visible(False)
+
+
+ax.legend(numpoints=1) #show legend with only one dot
+
+mpld3.display() #show the plot
+
+# uncomment the below to export to html
+html = mpld3.fig_to_html(fig3)
+print(html)
+
+# Plot 4
+fig4, ax = plt.subplots(figsize=(14,6)) #set plot size
+ax.margins(0.03) # Optional, just adds 5% padding to the autoscaling
+
+#iterate through groups to layer the plot
+#note that I use the cluster_name and cluster_color dicts with the 'name' lookup to return the appropriate color/label
+for name, group in groupsFour:
+    points = ax.plot(group.x, group.y, marker='o', linestyle='', ms=18, label=cluster_names[name], mec='none', color=cluster_colors[name])
+    ax.set_aspect('auto')
+    labels = [i for i in group.title]
+
+    #set tooltip using points, labels and the already defined 'css'
+    tooltip = mpld3.plugins.PointHTMLTooltip(points[0], labels,
+                                       voffset=10, hoffset=10, css=css)
+    #connect tooltip to fig
+    mpld3.plugins.connect(fig4, tooltip, TopToolbar())
+
+    #set tick marks as blank
+    ax.axes.get_xaxis().set_ticks([])
+    ax.axes.get_yaxis().set_ticks([])
+
+    #set axis as blank
+    ax.axes.get_xaxis().set_visible(False)
+    ax.axes.get_yaxis().set_visible(False)
+
+
+ax.legend(numpoints=1) #show legend with only one dot
+
+mpld3.display() #show the plot
+
+# uncomment the below to export to html
+html = mpld3.fig_to_html(fig4)
+print(html)
+
+# Plot 5
+fig5, ax = plt.subplots(figsize=(14,6)) #set plot size
+ax.margins(0.03) # Optional, just adds 5% padding to the autoscaling
+
+#iterate through groups to layer the plot
+#note that I use the cluster_name and cluster_color dicts with the 'name' lookup to return the appropriate color/label
+for name, group in groupsFive:
+    points = ax.plot(group.x, group.y, marker='o', linestyle='', ms=18, label=cluster_names[name], mec='none', color=cluster_colors[name])
+    ax.set_aspect('auto')
+    labels = [i for i in group.title]
+
+    #set tooltip using points, labels and the already defined 'css'
+    tooltip = mpld3.plugins.PointHTMLTooltip(points[0], labels,
+                                       voffset=10, hoffset=10, css=css)
+    #connect tooltip to fig
+    mpld3.plugins.connect(fig5, tooltip, TopToolbar())
+
+    #set tick marks as blank
+    ax.axes.get_xaxis().set_ticks([])
+    ax.axes.get_yaxis().set_ticks([])
+
+    #set axis as blank
+    ax.axes.get_xaxis().set_visible(False)
+    ax.axes.get_yaxis().set_visible(False)
+
+
+ax.legend(numpoints=1) #show legend with only one dot
+
+mpld3.display() #show the plot
+
+# uncomment the below to export to html
+html = mpld3.fig_to_html(fig5)
+print(html)
