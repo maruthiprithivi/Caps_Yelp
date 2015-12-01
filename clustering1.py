@@ -24,6 +24,7 @@ from nltk.tag import pos_tag
 from scipy.cluster.hierarchy import ward, dendrogram
 import io
 import mpld3 as mpld3
+from gensim import corpora, models, similarities
  
 MDS()
 totalvocabStemmed1 = []
@@ -91,8 +92,10 @@ en_sw = set(stopwords.words('english'))
 regToken = RegexpTokenizer("[\w']+")
  
 # For LDA - No use for now
-def strip_proppers_POS(text):
-    tagged = pos_tag(text.split()) #use NLTK's part of speech tagger
+def stripProppersPOS(text):
+    review = regToken.tokenize(text)
+    review = [wordL.lower() for wordL in review]
+    tagged = pos_tag(review) #use NLTK's part of speech tagger
     non_propernouns = [word for word,pos in tagged if pos != 'NNP' and pos != 'NNPS']
     return non_propernouns
  
@@ -278,22 +281,22 @@ km3.fit(tfidfMatrix3)
 km4.fit(tfidfMatrix4)
 km5.fit(tfidfMatrix5)
  
-clustersOne = km1.labels_.tolist()
-clustersTwo = km2.labels_.tolist()
-clustersThree = km3.labels_.tolist()
-clustersFour = km4.labels_.tolist()
-clustersFive = km5.labels_.tolist()
+# clustersOne = km1.labels_.tolist()
+# clustersTwo = km2.labels_.tolist()
+# clustersThree = km3.labels_.tolist()
+# clustersFour = km4.labels_.tolist()
+# clustersFive = km5.labels_.tolist()
  
-# joblib.dump(km1,  'doc_cluster.pkl')
-km1 = joblib.load('doc_cluster.pkl')
-# joblib.dump(km2,  'doc_cluster.pkl')
-km2 = joblib.load('doc_cluster.pkl')
-# joblib.dump(km3,  'doc_cluster.pkl')
-km3 = joblib.load('doc_cluster.pkl')
-# joblib.dump(km4,  'doc_cluster.pkl')
-km4 = joblib.load('doc_cluster.pkl')
-# joblib.dump(km5,  'doc_cluster.pkl')
-km5 = joblib.load('doc_cluster.pkl')
+joblib.dump(km1,  'doc_cluster.pkl')
+# km1 = joblib.load('doc_cluster.pkl')
+joblib.dump(km2,  'doc_cluster.pkl')
+# km2 = joblib.load('doc_cluster.pkl')
+joblib.dump(km3,  'doc_cluster.pkl')
+# km3 = joblib.load('doc_cluster.pkl')
+joblib.dump(km4,  'doc_cluster.pkl')
+# km4 = joblib.load('doc_cluster.pkl')
+joblib.dump(km5,  'doc_cluster.pkl')
+# km5 = joblib.load('doc_cluster.pkl')
  
 clustersOne = km1.labels_.tolist()
 clustersTwo = km2.labels_.tolist()
@@ -706,8 +709,11 @@ ax.legend(numpoints=1) #show legend with only one dot
 mpld3.display() #show the plot
 
 # uncomment the below to export to html
-html = mpld3.fig_to_html(fig1)
-print(html)
+html1 = mpld3.fig_to_html(fig1)
+# print(html)
+htmlFile= open("plot1.html","w")
+htmlFile.write(html1)
+htmlFile.close()
 
 # Plot 2
 fig2, ax = plt.subplots(figsize=(14,6)) #set plot size
@@ -740,8 +746,11 @@ ax.legend(numpoints=1) #show legend with only one dot
 mpld3.display() #show the plot
 
 # uncomment the below to export to html
-html = mpld3.fig_to_html(fig2)
-print(html)
+html2 = mpld3.fig_to_html(fig2)
+# print(html)
+htmlFile= open("plot2.html","w")
+htmlFile.write(html2)
+htmlFile.close()
 
 # Plot 3
 fig3, ax = plt.subplots(figsize=(14,6)) #set plot size
@@ -774,8 +783,11 @@ ax.legend(numpoints=1) #show legend with only one dot
 mpld3.display() #show the plot
 
 # uncomment the below to export to html
-html = mpld3.fig_to_html(fig3)
-print(html)
+html3 = mpld3.fig_to_html(fig3)
+# print(html)
+htmlFile= open("plot3.html","w")
+htmlFile.write(html3)
+htmlFile.close()
 
 # Plot 4
 fig4, ax = plt.subplots(figsize=(14,6)) #set plot size
@@ -808,8 +820,12 @@ ax.legend(numpoints=1) #show legend with only one dot
 mpld3.display() #show the plot
 
 # uncomment the below to export to html
-html = mpld3.fig_to_html(fig4)
-print(html)
+html4 = mpld3.fig_to_html(fig4)
+# print(html)
+htmlFile= open("plot4.html","w")
+htmlFile.write(html4)
+htmlFile.close()
+
 
 # Plot 5
 fig5, ax = plt.subplots(figsize=(14,6)) #set plot size
@@ -842,5 +858,110 @@ ax.legend(numpoints=1) #show legend with only one dot
 mpld3.display() #show the plot
 
 # uncomment the below to export to html
-html = mpld3.fig_to_html(fig5)
-print(html)
+html5 = mpld3.fig_to_html(fig5)
+# print(html)
+htmlFile= open("plot5.html","w")
+htmlFile.write(html5)
+htmlFile.close()
+
+
+
+# Dendogram 1
+
+linkageMatrix1 = ward(dist1) #define the linkage_matrix using ward clustering pre-computed distances
+
+fig, ax = plt.subplots(figsize=(15, 20)) # set size
+ax = dendrogram(linkageMatrix1, orientation="right", labels=businessName1);
+
+plt.tick_params(\
+    axis= 'x',          # changes apply to the x-axis
+    which='both',      # both major and minor ticks are affected
+    bottom='off',      # ticks along the bottom edge are off
+    top='off',         # ticks along the top edge are off
+    labelbottom='off')
+
+plt.tight_layout() #show plot with tight layout
+
+#uncomment below to save figure
+plt.savefig('wardClustersOne.png', dpi=200) #save figure as ward_clusters
+
+# Dendogram 2
+
+linkageMatrix2 = ward(dist2) #define the linkage_matrix using ward clustering pre-computed distances
+
+# fig, ax = plt.subplots(figsize=(15, 20)) # set size
+ax = dendrogram(linkageMatrix2, orientation="right", labels=businessName2);
+
+plt.tick_params(\
+    axis= 'x',          # changes apply to the x-axis
+    which='both',      # both major and minor ticks are affected
+    bottom='off',      # ticks along the bottom edge are off
+    top='off',         # ticks along the top edge are off
+    labelbottom='off')
+
+plt.tight_layout() #show plot with tight layout
+
+#uncomment below to save figure
+plt.savefig('wardClustersTwo.png', dpi=200) #save figure as ward_clusters
+
+# Dendogram 3
+
+linkageMatrix3 = ward(dist3) #define the linkage_matrix using ward clustering pre-computed distances
+
+# fig, ax = plt.subplots(figsize=(15, 20)) # set size
+ax = dendrogram(linkageMatrix3, orientation="right", labels=businessName3);
+
+plt.tick_params(\
+    axis= 'x',          # changes apply to the x-axis
+    which='both',      # both major and minor ticks are affected
+    bottom='off',      # ticks along the bottom edge are off
+    top='off',         # ticks along the top edge are off
+    labelbottom='off')
+
+plt.tight_layout() #show plot with tight layout
+
+#uncomment below to save figure
+plt.savefig('wardClustersThree.png', dpi=200) #save figure as ward_clusters
+
+# Dendogram 4
+
+linkageMatrix4 = ward(dist4) #define the linkage_matrix using ward clustering pre-computed distances
+
+# fig, ax = plt.subplots(figsize=(15, 20)) # set size
+ax = dendrogram(linkageMatrix4, orientation="right", labels=businessName4);
+
+plt.tick_params(\
+    axis= 'x',          # changes apply to the x-axis
+    which='both',      # both major and minor ticks are affected
+    bottom='off',      # ticks along the bottom edge are off
+    top='off',         # ticks along the top edge are off
+    labelbottom='off')
+
+plt.tight_layout() #show plot with tight layout
+
+#uncomment below to save figure
+plt.savefig('wardClustersFour.png', dpi=200) #save figure as ward_clusters
+
+# Dendogram 5
+
+linkageMatrix5 = ward(dist5) #define the linkage_matrix using ward clustering pre-computed distances
+
+# fig, ax = plt.subplots(figsize=(15, 20)) # set size
+ax = dendrogram(linkageMatrix5, orientation="right", labels=businessName5);
+
+plt.tick_params(\
+    axis= 'x',          # changes apply to the x-axis
+    which='both',      # both major and minor ticks are affected
+    bottom='off',      # ticks along the bottom edge are off
+    top='off',         # ticks along the top edge are off
+    labelbottom='off')
+
+plt.tight_layout() #show plot with tight layout
+
+#uncomment below to save figure
+plt.savefig('wardClustersFive.png', dpi=200) #save figure as ward_clusters
+
+#Latent Dirichlet Allocation implementation with Gensim
+preprocess1 = [stripProppersPOS(doc) for doc in bagOfReviews1]
+tokenizedText1 = [textPrepStem(text) for text in preprocess1]
+texts1 = [[word for word in text if word not in stopwords] for text in tokenizedText1]
