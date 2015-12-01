@@ -25,6 +25,7 @@ from scipy.cluster.hierarchy import ward, dendrogram
 import io
 import mpld3 as mpld3
 from gensim import corpora, models, similarities
+import numpy as np
  
 MDS()
 totalvocabStemmed1 = []
@@ -962,6 +963,103 @@ plt.tight_layout() #show plot with tight layout
 plt.savefig('wardClustersFive.png', dpi=200) #save figure as ward_clusters
 
 #Latent Dirichlet Allocation implementation with Gensim
+
+# LDA 1 Star
 preprocess1 = [stripProppersPOS(doc) for doc in bagOfReviews1]
 tokenizedText1 = [textPrepStem(text) for text in preprocess1]
 texts1 = [[word for word in text if word not in stopwords] for text in tokenizedText1]
+print (len(texts1))
+dictionary1 = corpora.Dictionary(texts1)
+dictionary1.filter_extremes(no_below=1, no_above=0.8)
+corpus1 = [dictionary1.doc2bow(text) for text in texts1]
+len(corpus1)
+lda1 = models.LdaModel(corpus1, num_topics=5, id2word=dictionary1, update_every=5, chunksize=10000, passes=100)
+print(lda1[corpus1])
+topics1 = lda1.print_topics(5, num_words=20)
+topicMatrix1 = lda1.show_topics(formatted=False, num_words=20)
+topicMatrix1 = np.array(topicMatrix1)
+topicMatrix1.shape
+topicWords1 = topicMatrix1[:,:,1]
+for i in topicWords1:
+    print([str(word) for word in i])
+    print()
+    
+# LDA 1 Star
+preprocess2 = [stripProppersPOS(doc) for doc in bagOfReviews2]
+tokenizedText2 = [textPrepStem(text) for text in preprocess2]
+texts2 = [[word for word in text if word not in stopwords] for text in tokenizedText2]
+print (len(texts2))
+dictionary2 = corpora.Dictionary(texts2)
+dictionary2.filter_extremes(no_below=1, no_above=0.8)
+corpus2 = [dictionary2.doc2bow(text) for text in texts2]
+len(corpus2)
+lda2 = models.LdaModel(corpus2, num_topics=5, id2word=dictionary2, update_every=5, chunksize=10000, passes=100)
+print(lda2[corpus2])
+topics2 = lda2.print_topics(5, num_words=20)
+topicMatrix2 = lda2.show_topics(formatted=False, num_words=20)
+topicMatrix2 = np.array(topicMatrix2)
+topicMatrix2.shape
+topicWords2 = topicMatrix2[:,:,1]
+for i in topicWords2:
+    print([str(word) for word in i])
+    print()
+    
+# LDA 3 Star
+preprocess3 = [stripProppersPOS(doc) for doc in bagOfReviews3]
+tokenizedText3 = [textPrepStem(text) for text in preprocess3]
+texts3 = [[word for word in text if word not in stopwords] for text in tokenizedText3]
+print (len(texts3))
+dictionary3 = corpora.Dictionary(texts3)
+dictionary3.filter_extremes(no_below=1, no_above=0.8)
+corpus3 = [dictionary3.doc2bow(text) for text in texts3]
+len(corpus3)
+lda3 = models.LdaModel(corpus3, num_topics=5, id2word=dictionary3, update_every=5, chunksize=10000, passes=100)
+print(lda3[corpus3])
+topics3 = lda3.print_topics(5, num_words=20)
+topicMatrix3 = lda3.show_topics(formatted=False, num_words=20)
+topicMatrix3 = np.array(topicMatrix3)
+topicMatrix3.shape
+topicWords3 = topicMatrix3[:,:,1]
+for i in topicWords3:
+    print([str(word) for word in i])
+    print()
+    
+# LDA 4 Star
+preprocess4 = [stripProppersPOS(doc) for doc in bagOfReviews4]
+tokenizedText4 = [textPrepStem(text) for text in preprocess4]
+texts4 = [[word for word in text if word not in stopwords] for text in tokenizedText4]
+print (len(texts4))
+dictionary4 = corpora.Dictionary(texts4)
+dictionary4.filter_extremes(no_below=1, no_above=0.8)
+corpus4 = [dictionary4.doc2bow(text) for text in texts4]
+len(corpus4)
+lda4 = models.LdaModel(corpus4, num_topics=5, id2word=dictionary4, update_every=5, chunksize=10000, passes=100)
+print(lda4[corpus4])
+topics4 = lda4.print_topics(5, num_words=20)
+topicMatrix4 = lda4.show_topics(formatted=False, num_words=20)
+topicMatrix4 = np.array(topicMatrix4)
+topicMatrix4.shape
+topicWords4 = topicMatrix4[:,:,1]
+for i in topicWords4:
+    print([str(word) for word in i])
+    print()
+    
+# LDA 5 Star
+preprocess5 = [stripProppersPOS(doc) for doc in bagOfReviews5]
+tokenizedText5 = [textPrepStem(text) for text in preprocess5]
+texts5 = [[word for word in text if word not in stopwords] for text in tokenizedText5]
+print (len(texts5))
+dictionary5 = corpora.Dictionary(texts5)
+dictionary5.filter_extremes(no_below=1, no_above=0.8)
+corpus5 = [dictionary5.doc2bow(text) for text in texts5]
+len(corpus5)
+lda5 = models.LdaModel(corpus5, num_topics=5, id2word=dictionary5, update_every=5, chunksize=10000, passes=100)
+print(lda1[corpus5])
+topics5 = lda5.print_topics(5, num_words=20)
+topicMatrix5 = lda5.show_topics(formatted=False, num_words=20)
+topicMatrix5 = np.array(topicMatrix5)
+topicMatrix5.shape
+topicWords5 = topicMatrix5[:,:,1]
+for i in topicWords5:
+    print([str(word) for word in i])
+    print()
